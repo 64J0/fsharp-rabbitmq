@@ -19,12 +19,13 @@ printfn "[*] Waiting for messages."
 
 let consumer = new EventingBasicConsumer(channel)
 
-consumer.Received.AddHandler (fun _model ea ->
-        let body = ea.Body.ToArray()
-        let message = Encoding.UTF8.GetString(body)
-        printfn $"[x] Received {message}" )
+consumer.Received.AddHandler(fun _model ea ->
+    let body = ea.Body.ToArray()
+    let message = Encoding.UTF8.GetString(body)
+    printfn $"[x] Received {message}")
 
-channel.BasicConsume(queue = "hello", autoAck = true, consumer = consumer) |> ignore
+channel.BasicConsume(queue = "hello", autoAck = true, consumer = consumer)
+|> ignore
 
 printfn "Press [enter] to exit."
 Console.ReadLine() |> ignore

@@ -1,10 +1,17 @@
 ﻿open System.Text
 open RabbitMQ.Client
 
+// RabbitMQ default ports:
+// - Message broker = 5672
+// - Front-end      = 15672
 let factory = new ConnectionFactory()
 factory.HostName <- "localhost"
 
+// The connection abstracts the socket connection, and takes care of protocol version
+// negotiation and authentication and so on for us.
 let connection = factory.CreateConnection()
+
+// The channel is where most of the API for getting things done resides.
 let channel = connection.CreateModel()
 
 let arguments = Seq.empty |> dict
