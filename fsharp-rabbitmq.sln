@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Send", "Send\Send.fsproj", "{3C912E1C-6912-4DFD-8EA6-F9BF3E5D6D5E}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Receive", "Receive\Receive.fsproj", "{FEF70BB3-5DDA-4B59-8089-D1844071003A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3C912E1C-6912-4DFD-8EA6-F9BF3E5D6D5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C912E1C-6912-4DFD-8EA6-F9BF3E5D6D5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C912E1C-6912-4DFD-8EA6-F9BF3E5D6D5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C912E1C-6912-4DFD-8EA6-F9BF3E5D6D5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEF70BB3-5DDA-4B59-8089-D1844071003A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEF70BB3-5DDA-4B59-8089-D1844071003A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEF70BB3-5DDA-4B59-8089-D1844071003A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEF70BB3-5DDA-4B59-8089-D1844071003A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
