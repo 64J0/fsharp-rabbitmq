@@ -8,17 +8,24 @@ I'm adding my notes while studying RabbitMQ documentation to [this document](./N
 
 ## How to use?
 
+First, make sure that you have started the RabbitMQ container and restored the packages with:
+
+```bash
+docker-compose up -d
+
+dotnet restore
+```
+
+Now you can start looking for the example instructions.
+
 Basic example:
 
 ```bash
-# 1. start the RabbitMQ process
-docker-compose up -d
-
-# 2. run the Receive/ project
+# 1. run the Receive/ project
 # our consumer
 dotnet run --project Receive/
 
-# 3. run the Send/ project
+# 2. run the Send/ project
 # our publisher
 dotnet run --project Send/
 ```
@@ -28,18 +35,15 @@ dotnet run --project Send/
 **Work-queue pattern** - each task is delivered to exactly one worker:
 
 ```bash
-# 1. start the RabbitMQ process
-docker-compose up -d
-
-# 2.1. run the Worker/ project
+# 1.1. run the Worker/ project
 # our consumer 1
 dotnet run --project Worker/
 
-# 2.2. run the Worker/ project
+# 1.2. run the Worker/ project
 # our consumer 2
 dotnet run --project Worker/
 
-# 3. run the NewTask/ project
+# 2. run the NewTask/ project
 # our publisher
 dotnet run --project NewTask/ "First message."
 dotnet run --project NewTask/ "Second message.."
@@ -55,18 +59,30 @@ dotnet run --project NewTask/ "Fourth message...."
 **Publish/subscribe pattern** - deliver a message to multiple consumers:
 
 ```bash
-# 1. start the RabbitMQ process
-docker-compose up -d
-
-# 2.1 run the ReceiveLogs/ project
+# 1.1 run the ReceiveLogs/ project
 dotnet run --project ReceiveLogs/
 
-# 2.2 run the ReceiveLogs/ project
+# 1.2 run the ReceiveLogs/ project
 dotnet run --project ReceiveLogs/
 
-# 3. run the EmitLog/ project
+# 2. run the EmitLog/ project
 dotnet run --project EmitLog/ "First message."
 dotnet run --project EmitLog/ "Second message.."
 dotnet run --project EmitLog/ "Third message..."
 dotnet run --project EmitLog/ "Fourth message...."
+```
+
+---
+
+**Publish/subscribe pattern 2** - deliver a message to multiple consumers, but limit some consumers to a subset of all the messages (`direct` exchange):
+
+```bash
+# 1 run the ReceiveLogsDirect/ project
+dotnet run --project ReceiveLogsDirect/
+
+# 2. run the EmitLogDirect/ project
+dotnet run --project EmitLogDirect/ error "First message."
+dotnet run --project EmitLogDirect/ info "Second message.."
+dotnet run --project EmitLogDirect/ warning "Third message..."
+dotnet run --project EmitLogDirect/ error "Fourth message...."
 ```

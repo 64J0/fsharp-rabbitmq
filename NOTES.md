@@ -254,7 +254,7 @@ let queueName = channel.QueueDeclare().QueueName
 
 ### Bindings
 
-Binding is the mechanism that connects exchanges and queues. 
+Binding is the mechanism that connects exchanges and queues. It basically defines that the queue is interested in messages from a specific exchange.
 
 Considering the `fanout` exchange and the random named queue created before, you can bind them together with:
 
@@ -271,3 +271,51 @@ channel.QueueBind(queue = queueName,
 ```
 
 From now on the `logs` exchange will append messages to our queue.
+
+Now, imagine that we want to subscribe a queue only for a subset of the messages that reach the exchange. We can do it by using the `routingKey` on the `QueueBind` configuration.
+
++ To avoid confusion with the `routingKey` parameter of the `BasicPublish`, it's also known as `binding key`.
+
+This is how we could create a binding with a key:
+
+```fsharp
+// from the "Exchanges" section
+channel.ExchangeDeclare("logs", ExchangeType.Direct)
+
+// from the "Temporary queues" section
+let queueName = channel.QueueDeclare().QueueName
+
+channel.QueueBind(queue = queueName,
+                  exchange = "direct_logs",
+                  routingKey = "black")
+```
+
+Keep in mind that the meaning of a binding key depends on the exchange type. The `fanout` exchange simply ignore its value, for example. You can use a `direct` exchange to have this filter option working properly. 
+
+Check this example:
+
+```mermaid
+---
+title: Direct exchange
+---
+flowchart LR
+    publisher((P))
+    exchange{{direct}}
+    queue1[[Q1]]
+    queue2[[Q2]]
+    consumer1((C1))
+    consumer2((C2))
+
+    publisher-->exchange
+    exchange-->|orange|queue1
+    exchange-->|black|queue2
+    exchange-->|green|queue2
+    queue1-->consumer1
+    queue2-->consumer2
+```
+
+In this setup, we can see the `direct` exchange with two queues bound to it. The first queue is bound with binding key `orange`, and the second has two bindings, one with binding key `black` and the other one with `green`.
+
+In such a setup a message published to the exchange with a routing key `orange` will be routed to queue `Q1`. Messages with a routing key of `black` or `green` will go to `Q2`. All other messages will be discarded.
+
+To make it clear, it's perfectly legal to bind multiple queues with the same binding key.

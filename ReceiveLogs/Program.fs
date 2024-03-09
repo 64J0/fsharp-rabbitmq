@@ -12,7 +12,7 @@ let main (_args: string[]) : int =
     let connection = factory.CreateConnection()
     let channel = connection.CreateModel()
 
-    channel.ExchangeDeclare(exchange = "logs", ``type`` = ExchangeType.Fanout )
+    channel.ExchangeDeclare(exchange = "logs", ``type`` = ExchangeType.Fanout)
 
     // declare a server-named queue
     let queueName = channel.QueueDeclare().QueueName
