@@ -319,3 +319,47 @@ In this setup, we can see the `direct` exchange with two queues bound to it. The
 In such a setup a message published to the exchange with a routing key `orange` will be routed to queue `Q1`. Messages with a routing key of `black` or `green` will go to `Q2`. All other messages will be discarded.
 
 To make it clear, it's perfectly legal to bind multiple queues with the same binding key.
+
+### Topic exchange
+
+Messages sent to a `topic` exchange can't have an arbitrary `routing_key` - it must be a list of words, delimited by dots. For example: `stock.usd.nyse`, `nyse.vmw`. There can be as many words in the routing key as you like, up to the limit of 255 bytes.
+
+The binding key must also be in the same form.
+
+The logic behind the `topic` exchange is similar to a `direct` one - a message sent with a particular routing key will be delivered to all the queues that are bound with a matching binding key. However there are two important special cases for binding keys:
+
+- "*" (star) can substitute for exactly one word.
+- "#" (hash) can substitute for zero or more words.
+
+Check this example:
+
+```mermaid
+---
+title: Topic exchange
+---
+flowchart LR
+    publisher((P))
+    exchange{{topic}}
+    queue1[[Q1]]
+    queue2[[Q2]]
+    consumer1((C1))
+    consumer2((C2))
+
+    publisher-->exchange
+    exchange-->|*.orange.*|queue1
+    exchange-->|*.*.rabbit|queue2
+    exchange-->|lazy.#|queue2
+    queue1-->consumer1
+    queue2-->consumer2
+```
+
+In this example, we're going to send messages which all describe animals. The messages will be sent with a routing key that consists of three words (two dots). The first word in the routing key will describe speed, second a colour and third a species: "\<speed\>.\<colour\>.\<species\>".
+
+The bindings configuration can be summarised as:
+
+- Q1 is interested in all the orange animals.
+- Q2 wants to hear everything about rabbits, and everything about lazy animals.
+
+What happens if we break our contract and send a message with one or four words, like "orange" or "quick.orange.new.rabbit"? Well, these messages won't match any bindings and will be lost.
+
+On the other hand "lazy.orange.new.rabbit", even though it has four words, will match the last binding and will be delivered to the second queue.

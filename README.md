@@ -56,7 +56,7 @@ dotnet run --project NewTask/ "Fourth message...."
 
 ---
 
-**Publish/subscribe pattern** - deliver a message to multiple consumers:
+**Publish/subscribe pattern** - deliver a message to multiple consumers (`fanout` exchange):
 
 ```bash
 # 1.1 run the ReceiveLogs/ project
@@ -74,7 +74,7 @@ dotnet run --project EmitLog/ "Fourth message...."
 
 ---
 
-**Publish/subscribe pattern 2** - deliver a message to multiple consumers, but limit some consumers to a subset of all the messages (`direct` exchange):
+**Publish/subscribe pattern 2** - deliver a message to multiple consumers, but limit some consumers to a subset of all the messages (`direct` exchange) using QueueBinding `routingKey`:
 
 ```bash
 # 1 run the ReceiveLogsDirect/ project
@@ -85,4 +85,19 @@ dotnet run --project EmitLogDirect/ error "First message."
 dotnet run --project EmitLogDirect/ info "Second message.."
 dotnet run --project EmitLogDirect/ warning "Third message..."
 dotnet run --project EmitLogDirect/ error "Fourth message...."
+```
+
+---
+
+**Publish/subscribe pattern 3** - deliver a message to multiple consumers, but limit some consumers to a subset of all the messages (`topic` exchange) using QueueBinding `routingKey` and the message source:
+
+```bash
+# 1 run the ReceiveLogsTopic/ project
+dotnet run --project ReceiveLogsTopic/ "#"
+dotnet run --project ReceiveLogsTopic/ "kern.*"
+dotnet run --project ReceiveLogsTopic/ "*.critical"
+
+# 2. run the EmitLogTopic/ project
+dotnet run --project EmitLogTopic/ "kern.critical" "A critical kernel error"
+dotnet run --project EmitLogTopic/ "kern.critical" "Run!"
 ```

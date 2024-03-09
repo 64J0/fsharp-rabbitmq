@@ -19,6 +19,10 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "EmitLogDirect", "EmitLogDir
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ReceiveLogsDirect", "ReceiveLogsDirect\ReceiveLogsDirect.fsproj", "{4189C771-F65F-4F36-AABB-691EE68740BA}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "EmitLogTopic", "EmitLogTopic\EmitLogTopic.fsproj", "{94703505-35F2-41E7-9B8E-1B95B86026DB}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ReceiveLogsTopic", "ReceiveLogsTopic\ReceiveLogsTopic.fsproj", "{348CA510-23B3-4EA1-8784-BA2ED7439AD2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,5 +64,13 @@ Global
 		{4189C771-F65F-4F36-AABB-691EE68740BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4189C771-F65F-4F36-AABB-691EE68740BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4189C771-F65F-4F36-AABB-691EE68740BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94703505-35F2-41E7-9B8E-1B95B86026DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94703505-35F2-41E7-9B8E-1B95B86026DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94703505-35F2-41E7-9B8E-1B95B86026DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94703505-35F2-41E7-9B8E-1B95B86026DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{348CA510-23B3-4EA1-8784-BA2ED7439AD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{348CA510-23B3-4EA1-8784-BA2ED7439AD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{348CA510-23B3-4EA1-8784-BA2ED7439AD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{348CA510-23B3-4EA1-8784-BA2ED7439AD2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
