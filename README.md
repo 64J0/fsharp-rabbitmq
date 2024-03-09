@@ -18,7 +18,7 @@ dotnet restore
 
 Now you can start looking for the example instructions.
 
-Basic example:
+### Basic example:
 
 ```bash
 # 1. run the Receive/ project
@@ -30,9 +30,9 @@ dotnet run --project Receive/
 dotnet run --project Send/
 ```
 
----
+### Work-queue pattern 
 
-**Work-queue pattern** - each task is delivered to exactly one worker:
+Each task is delivered to exactly one worker:
 
 ```bash
 # 1.1. run the Worker/ project
@@ -54,9 +54,9 @@ dotnet run --project NewTask/ "Fourth message...."
 # through our worker instances
 ```
 
----
+### Publish/subscribe pattern
 
-**Publish/subscribe pattern** - deliver a message to multiple consumers (`fanout` exchange):
+Deliver a message to multiple consumers using a `fanout` exchange:
 
 ```bash
 # 1.1 run the ReceiveLogs/ project
@@ -72,9 +72,9 @@ dotnet run --project EmitLog/ "Third message..."
 dotnet run --project EmitLog/ "Fourth message...."
 ```
 
----
+### Publish/subscribe pattern 2
 
-**Publish/subscribe pattern 2** - deliver a message to multiple consumers, but limit some consumers to a subset of all the messages (`direct` exchange) using QueueBinding `routingKey`:
+Deliver a message to multiple consumers, but limit some consumers to a subset of all the messages (`direct` exchange) using QueueBinding `routingKey`:
 
 ```bash
 # 1 run the ReceiveLogsDirect/ project
@@ -87,9 +87,9 @@ dotnet run --project EmitLogDirect/ warning "Third message..."
 dotnet run --project EmitLogDirect/ error "Fourth message...."
 ```
 
----
+### Publish/subscribe pattern 3
 
-**Publish/subscribe pattern 3** - deliver a message to multiple consumers, but limit some consumers to a subset of all the messages (`topic` exchange) using QueueBinding `routingKey` and the message source:
+Deliver a message to multiple consumers, but limit some consumers to a subset of all the messages (`topic` exchange) using QueueBinding `routingKey` and the message source:
 
 ```bash
 # 1 run the ReceiveLogsTopic/ project
@@ -100,4 +100,18 @@ dotnet run --project ReceiveLogsTopic/ "*.critical"
 # 2. run the EmitLogTopic/ project
 dotnet run --project EmitLogTopic/ "kern.critical" "A critical kernel error"
 dotnet run --project EmitLogTopic/ "kern.critical" "Run!"
+```
+
+### RPC calls
+
+Running a function on a remote process and wait for the result.
+
+In general doing RPC over RabbitMQ is easy. A client sends a request message and a server replies with a response message. In order to receive a response we need to send a 'callback' queue address with the request.
+
+```bash
+# 1 run the RPCServer/
+dotnet run --project RPCServer/
+
+# 2 run the RPCClient/
+dotnet run --project RPCClient/
 ```
