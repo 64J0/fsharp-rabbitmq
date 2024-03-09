@@ -58,7 +58,10 @@ dotnet run --project NewTask/ "Fourth message...."
 # 1. start the RabbitMQ process
 docker-compose up -d
 
-# 2. run the ReceiveLogs/ project
+# 2.1 run the ReceiveLogs/ project
+dotnet run --project ReceiveLogs/
+
+# 2.2 run the ReceiveLogs/ project
 dotnet run --project ReceiveLogs/
 
 # 3. run the EmitLog/ project
