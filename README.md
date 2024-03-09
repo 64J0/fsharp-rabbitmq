@@ -1,8 +1,10 @@
-# Basic F# + RabbitMQ
+# F# + RabbitMQ
 
 This repository holds a simple project that illustrates how one can use F# along with RabbitMQ to send and receive messages. It is 100% based on the RabbitMQ [Get Started documentation for .NET](https://www.rabbitmq.com/tutorials/tutorial-one-dotnet). 
 
 For an older version you can check this other repository [edgarsanchez/FsRabbitMQ-Tutorials](https://github.com/edgarsanchez/FsRabbitMQ-Tutorials).
+
+I'm adding my notes while studying RabbitMQ documentation to [this document](./NOTES.md). Hope it's useful to understand this tool and most of the code here.
 
 ## How to use?
 
@@ -23,7 +25,7 @@ dotnet run --project Send/
 
 ---
 
-Work queues:
+**Work-queue pattern** - each task is delivered to exactly one worker:
 
 ```bash
 # 1. start the RabbitMQ process
@@ -47,3 +49,7 @@ dotnet run --project NewTask/ "Fourth message...."
 # notice that the messages are distributed according to round-robin
 # through our worker instances
 ```
+
+---
+
+**Publish/subscribe pattern** - deliver a message to multiple consumers:
