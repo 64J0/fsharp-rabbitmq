@@ -11,6 +11,10 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "NewTask", "NewTask\NewTask.
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Worker", "Worker\Worker.fsproj", "{16C64A3D-26A5-4ECD-83A2-2F495BBBA73B}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "EmitLog", "EmitLog\EmitLog.fsproj", "{9D468C88-7CDD-48E7-A1A5-8B6BAA12ECD8}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ReceiveLogs", "ReceiveLogs\ReceiveLogs.fsproj", "{F8AE9AB0-0D2A-46F2-A372-7829A5FCDB14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +40,13 @@ Global
 		{16C64A3D-26A5-4ECD-83A2-2F495BBBA73B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16C64A3D-26A5-4ECD-83A2-2F495BBBA73B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16C64A3D-26A5-4ECD-83A2-2F495BBBA73B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D468C88-7CDD-48E7-A1A5-8B6BAA12ECD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D468C88-7CDD-48E7-A1A5-8B6BAA12ECD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D468C88-7CDD-48E7-A1A5-8B6BAA12ECD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D468C88-7CDD-48E7-A1A5-8B6BAA12ECD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8AE9AB0-0D2A-46F2-A372-7829A5FCDB14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8AE9AB0-0D2A-46F2-A372-7829A5FCDB14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8AE9AB0-0D2A-46F2-A372-7829A5FCDB14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8AE9AB0-0D2A-46F2-A372-7829A5FCDB14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

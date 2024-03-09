@@ -88,3 +88,186 @@ Note that RabbitMQ doesn't allow you to redefine an existing queue with differen
 ### Fair dispatch
 
 In order to avoid sending messages to consumers that are already stuck in some process (without ack yet), we can use the *BasicQos* with *prefetchCount=1*. This tells RabbitMQ to not send more than one message to a worker at a time.
+
+### Exchanges
+
+The core idea in the messaging model in RabbitMQ is that the producer never sends any messages directly to a queue. Actually, quite often the producer doesn't even know if a message will be delivered to any queue at all.
+
+Instead, the producer can only send messages to an *exchange*. An exchange is a very simple thing. On one side it receives messages from producers and the other side it pushes them to queues. The exchange must know exactly what to do with a message it receives. Should it append to a particular queue? Should it append to many queues? Or should it get discarded. The rules are defined by the *exchange type*.
+
+Right now, these are the exchange types available:
+
+- `default` (empty string): every queue that is created is automatically bound to it with a `routingKey` which is the same as the queue name. 
+
+  With this configuration, the user has the perception that there is no routing on the exchange level, but that every message is sent directly to the queue with the name specified in the `routingKey`;
+
+  Here is some F# code to illustrate how this exchange works (this code does not work in real life):
+
+  ```fsharp
+  if message.routingKey = queueName then
+      addMessageToTheQueue(message, queueName)
+  else
+      ignoreMessage()
+  ```
+
+- `direct`: delivers messages to queues based on the message `routingKey`. A direct exchange is ideal for the unicast routing of messages, although they can be used for multicast routing as well. 
+
+  Here is how it works:
+  
+  - A queue binds to the exchange with a routing key K;
+  - When a new message with routing key R arrives at the direct exchange, the exchange routes it to the queue if K = R;
+  - If multiple queues are bound to a direct exchange with the same routing key K, the exchange will route the message to all queues for which K = R;
+
+  Here is some F# code to illustrate how this exchange works (this code does not work in real life):
+
+  ```fsharp
+  if message.routingKey = queue.routingKey then
+      addMessageToTheQueue(message, queueName)
+  else
+      ignoreMessage()
+  ```
+
+  ```mermaid
+  ---
+  title: Direct exchange routing
+  ---
+  flowchart LR
+      images((images))
+      archiver1((archiver1))
+      archiver2((archiver2))
+      cropper((cropper))
+      resizer((resizer))
+
+      images-->|:routing_key => #quot;images.archive#quot;|archiver1
+      images-->|:routing_key => #quot;images.archive#quot;|archiver2
+      images-->|:routing_key => #quot;images.crop#quot;|cropper
+      images-->|:routing_key => #quot;images.resize#quot;|resizer
+  ```
+
+- `topic`: route messages to one or many queues based on matching between a message routing key and the pattern that was used to bind a queue to an exchange. The topic exchange is often used to implement various publish/subscribe pattern variations. Topic exchanges are commonly used for the multicast routing of messages.
+  
+  Topic exchanges have a very broad set of use cases. Whenever a problem involves multiple consumers/applications that selectively choose which type of messages they want to receive, the use of topic exchanges should be considered.
+
+  Example uses are:
+
+  - Distributing data relevant to specific geographic location, for example, points of sale;
+  - Background task processing done by multiple workers, each capable of handling specific set of tasks;
+  - Stocks price updates (and updates on other kinds of financial data);
+  - News updates that involve categorization or tagging (for example, only for a particular sport or team);
+  - Orchestration of services of different kinds in the cloud;
+  - Distributed architecture/OS-specific software builds or packaging where each builder can handle only one architecture or OS.
+
+  ```fsharp
+  if Regex.IsMatch(message.routingKey, queue.pattern) then
+      addMessageToTheQueue(message, queueName)
+  else
+      ignoreMessage()
+  ```
+
+- `headers`: designed for routing on multiple attributes that are more easily expressed as message headers than a routing key. Headers exchanges ignore the routing key attribute. Instead, the attribute used for routing are taken from the headers attribute. A message is considered matching if the value of the header equals the value specified upon binding.
+
+  Headers exchanges can be looked upon as "direct exchanges on steroids". Because they route based on header values, they can be used as direct exchanges where the routing key does not have to be a string; it could be an integer of a hash (dictionary) for example;
+
+  ```fsharp
+  if headersAreEqual message.headers queue.headers then
+      addMessageToTheQueue(message, queueName)
+  else
+      ignoreMessage()
+  ```
+
+- `fanout`: broadcasts all the messages it receives to all the queues that are bound to it, and the routing key is ignored. Fanout exchanges are ideal for the broadcast routing of messages.
+
+  ```fsharp
+  if queue.isBoundToExchange() then
+      addMessageToTheQueue(message, queueName)
+  else
+      ignoreMessage()
+  ```
+
+  Example use cases:
+
+  - Massively multi-player online (MMO) games can use it for leaderboard updates or other global events;
+  - Sport news sites can use fanout exchanges for distributing score updates to mobile clients in near real-time;
+  - Distributed systems can broadcast various state and configuration updates;
+  - Group chats can distribute messages between participants using a fanout exchange (although AMQP does not have a built-in concept of presence, so XMPP may be a better choice).
+
+  ```mermaid
+  ---
+  title: Fanout exchange routing
+  ---
+  flowchart LR
+      exchange((Exchange))
+      queue1((Queue))
+      queue2((Queue))
+      queue3((Queue))
+
+      exchange-->|routes|queue1
+      exchange-->|routes|queue2
+      exchange-->|routes|queue3
+  ```
+
+To list the exchanges one can use the command:
+
+```bash
+sudo rabbitmqctl list_exchanges
+```
+
+If we use an empty string value for the exchange on our configuration it assumes a default or nameless exchange. In this case, messages are routed to the queue witht he name specified by `routingKey`, if it exists.
+
+```csharp
+// declaring an exchange
+channel.ExchangeDeclare("logs", ExchangeType.Fanout);
+
+// empty exchange example:
+var message = GetMessage(args);
+var body = Encoding.UTF8.GetBytes(message);
+channel.BasicPublish(exchange: string.Empty,
+                     routingKey: "hello",
+                     basicProperties: null,
+                     body: body);
+
+// named exchange example:
+var message = GetMessage(args);
+var body = Encoding.UTF8.GetBytes(message);
+channel.BasicPublish(exchange: "logs",
+                     routingKey: string.Empty,
+                     basicProperties: null,
+                     body: body);
+```
+
+### Temporary queues
+
+In some scenarios we don't want to share the same queue with more than one application. For example, consider an application that will be responsible for receiving logs. 
+
+1. It does not care for old logs, only for the new ones. 
+2. It wants to hear about all log messages, not just a subset of them.
+
+To solve the first necessity, we could use a fresh, empty queue whenever the log application starts. To avoid collisions, we can let the RabbitMQ server choose a random queue name for us. Other than that, to avoid using unecessary resources, this queue should be automatically deleted when our consumer dies.
+
+In the .NET client, when we supply no parameters to `QueueDeclare()` we create a **non-durable**, **exclusive**, **autodelete** queue with a generated name:
+
+```fsharp
+// queueName contains a random queue name. For example, it may look like:
+// amq.gen-JzTY20BRgKO-HjmUJj0wLg
+let queueName = channel.QueueDeclare().QueueName
+```
+
+### Bindings
+
+Binding is the mechanism that connects exchanges and queues. 
+
+Considering the `fanout` exchange and the random named queue created before, you can bind them together with:
+
+```fsharp
+// from the "Exchanges" section
+channel.ExchangeDeclare("logs", ExchangeType.Fanout)
+
+// from the "Temporary queues" section
+let queueName = channel.QueueDeclare().QueueName
+
+channel.QueueBind(queue = queueName,
+                  exchange = "logs",
+                  routingKey = string.Empty)
+```
+
+From now on the `logs` exchange will append messages to our queue.

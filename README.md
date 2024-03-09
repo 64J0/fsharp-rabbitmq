@@ -53,3 +53,17 @@ dotnet run --project NewTask/ "Fourth message...."
 ---
 
 **Publish/subscribe pattern** - deliver a message to multiple consumers:
+
+```bash
+# 1. start the RabbitMQ process
+docker-compose up -d
+
+# 2. run the ReceiveLogs/ project
+dotnet run --project ReceiveLogs/
+
+# 3. run the EmitLog/ project
+dotnet run --project EmitLog/ "First message."
+dotnet run --project EmitLog/ "Second message.."
+dotnet run --project EmitLog/ "Third message..."
+dotnet run --project EmitLog/ "Fourth message...."
+```
